@@ -1,0 +1,6 @@
+.directory {
+    @apply w-full h-full flex;
+    .item {
+        @apply w-1/2 h-full float-left bg-center bg-cover bg-no-repeat;
+    }
+}

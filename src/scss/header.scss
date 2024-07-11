@@ -1,0 +1,7 @@
+.header {
+    @apply h-24 shadow-md;
+
+    .logo {
+        @apply h-20 w-20 rounded-full overflow-hidden;
+    }
+}

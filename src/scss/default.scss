@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply text-xs bg-gray-100;
+}
+
+html, body {
+    @apply h-full p-0 m-0;
+}
+
+body {
+    @apply font-sans text-3xl font-normal leading-none
+}
+
+* {
+    @apply box-border;
+
+}
+
+a {
+    @apply no-underline
+}
+
+a, a:hover {
+    @apply text-blue-500 translate-x-2;
+}
+
+.App {
+    @apply w-full px-0 py-4 mx-auto my-0;
+}
+.main {
+    @apply w-full;
+    height: calc(100vh - 6rem);
+}
+#root {
+    @apply w-full h-screen;
+}

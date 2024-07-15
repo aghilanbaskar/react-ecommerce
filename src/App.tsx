@@ -1,16 +1,20 @@
-import HomePage from '@/pages/HomePage'
+import HomePage from './pages/HomePage'
 import '@/scss/default.scss'
-import Header from '@/components/Header'
+import RegistrationPage from './pages/RegistrationPage'
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider}  from 'react-router-dom'
+import MainLayouts from './layouts/MainLayouts'
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+  <Route path="/" element={<MainLayouts />} >
+    <Route index element={<HomePage />}  />
+    <Route path="/registration" element={<RegistrationPage />} />
+  </Route>
+  )
+)
 
 function App() {
-  return (
-    <>
-    <Header />
-    <div className='main'>
-    <HomePage />
-    </div>
-    </>
-  )
+  return  <RouterProvider router={router} />
 }
 
 export default App

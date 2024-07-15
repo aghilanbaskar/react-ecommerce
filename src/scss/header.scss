@@ -1,5 +1,6 @@
 .header {
-    @apply h-24 shadow-md flex;
+    @apply shadow-md;
+    height: 6rem;
 
     .logo {
         @apply h-10 w-10 rounded-full overflow-hidden justify-center items-center flex;

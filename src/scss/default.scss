@@ -32,7 +32,7 @@ a, a:hover {
 }
 .main {
     @apply w-full;
-    height: calc(100vh - 6rem);
+    height: calc(100vh - 6rem - 5rem);
 }
 #root {
     @apply w-full h-screen;

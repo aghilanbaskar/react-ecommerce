@@ -6,10 +6,10 @@ interface FormButtonsProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const FormButtons: FC<FormButtonsProps> = ({ children, ...otherProps }) => {
   return (
-    <button className='btn w-full' {...otherProps}>
+    <button className="btn w-full" {...otherProps}>
       {children}
     </button>
   );
-}
+};
 
 export default FormButtons;

@@ -1,11 +1,11 @@
 .header {
-    @apply shadow-md text-xl;
-    height: 6rem;
+  @apply shadow-md text-xl;
+  height: 6rem;
 
-    .logo {
-        @apply h-10 w-10 rounded-full overflow-hidden justify-center items-center flex;
-        img {
-            @apply h-full w-full justify-center items-center;
-        }
+  .logo {
+    @apply h-10 w-10 rounded-full overflow-hidden justify-center items-center flex;
+    img {
+      @apply h-full w-full justify-center items-center;
     }
+  }
 }

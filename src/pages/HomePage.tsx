@@ -1,7 +1,6 @@
-import React from 'react';
 import Directory from 'src/components/Directory';
 
-const HomePage = (props: { [key: string]: any }) => {
+const HomePage = () => {
   return <Directory />;
 };
 

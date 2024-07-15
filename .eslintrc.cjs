@@ -12,7 +12,18 @@ module.exports = {
     ],
     ignorePatterns: ['dist', '.eslintrc.cjs'],
     parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
-    settings: { react: { version: '18.2' } },
+    settings: { react: { version: '18.2' },
+    'import/resolver': {
+        alias: {
+          map: [
+            ['@', './src'],
+            ['@components', './src/components'],
+            ['@pages', './src/pages'],
+            // Add more aliases if needed
+          ],
+          extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        },
+      }, },
     plugins: ['react-refresh', 'import'],
     rules: {
       'react-refresh/only-export-components': [

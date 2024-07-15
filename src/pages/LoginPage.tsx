@@ -1,5 +1,6 @@
-import React from 'react';
 import logo from 'src/assets/logo.jpg';
+import FormButtons from 'src/components/forms/Buttons';
+import { signInWithGoogle } from '../firebase/utils';
 
 const LoginPage = () => {
   return (

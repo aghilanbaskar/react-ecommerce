@@ -1,4 +1,3 @@
-import React from 'react';
 import FormButtons from '../components/forms/Buttons';
 import { signInWithGoogle } from '../firebase/utils';
 import logo from 'src/assets/logo.jpg';

@@ -1,7 +1,7 @@
-import React from 'react';
 import shopMen from 'src/assets/shopMen.jpg';
 import shopWomen from 'src/assets/shopWomen.jpg';
 import 'src/scss/components/directory.scss';
+
 const Directory = () => {
   return (
     <div className="directory">

@@ -1,7 +1,10 @@
 .header {
-    @apply h-24 shadow-md;
+    @apply h-24 shadow-md flex;
 
     .logo {
-        @apply h-20 w-20 rounded-full overflow-hidden;
+        @apply h-10 w-10 rounded-full overflow-hidden justify-center items-center flex;
+        img {
+            @apply h-full w-full justify-center items-center;
+        }
     }
 }

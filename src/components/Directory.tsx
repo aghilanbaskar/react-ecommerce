@@ -5,8 +5,13 @@ import 'src/scss/components/directory.scss'
 const Directory = () => {
   return (
     <div className='directory'>
-        <div style={{ backgroundImage: `url(${shopMen})` }} className='item'></div>
-        <div style={{ backgroundImage: `url(${shopWomen})` }} className='item'></div>
+        <div style={{ backgroundImage: `url(${shopMen})` }} className='item'>
+            <a href='#'>Shop Men</a>
+        </div>
+        <div style={{ backgroundImage: `url(${shopWomen})` }} className='item'>
+
+            <a href='#'>Shop Women</a>
+        </div>
     </div>
   )
 }

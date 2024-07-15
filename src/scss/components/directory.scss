@@ -1,6 +1,20 @@
 .directory {
     @apply w-full h-full flex;
     .item {
-        @apply w-1/2 h-full float-left bg-center bg-cover bg-no-repeat;
+        @apply w-1/2 h-full float-left bg-center bg-cover bg-no-repeat relative;
+
+        &::after {
+            content: '';
+            @apply absolute top-0 left-0 z-10;
+        }
+
+        a {
+            @apply absolute -translate-x-2/4 -translate-y-2/4 z-[2] text-[2rem] leading-none font-normal uppercase text-[black] border px-[15px] py-2.5 border-solid border-[black] text-center left-1/2 top-1/2 bg-gray-400;
+            -moz-transform: translate(-50%, -50%);
+
+            &:hover {
+                background: bg-gray-600;
+              }
+        }
     }
 }

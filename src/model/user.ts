@@ -1,6 +1,7 @@
 import { auth, db } from '../firebase/utils';
 import {
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   User,
 } from 'firebase/auth';
@@ -60,27 +61,28 @@ class UserModel {
     email: string,
     password: string
   ): Promise<UserModel | null> {
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    if (user) {
+      const newUser = new UserModel(
+        user.uid,
         email,
-        password
+        user.displayName || '',
+        user
       );
-      const user = userCredential.user;
-      if (user) {
-        const newUser = new UserModel(
-          user.uid,
-          email,
-          user.displayName || '',
-          user
-        );
-        return newUser;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error signing in: ', error);
-      return null;
+      return newUser;
     }
+    return null;
+  }
+
+  static async sendPasswordResetEmail(email: string) {
+    await sendPasswordResetEmail(auth, email, {
+      url: `${window.location.origin}/login`,
+    });
   }
 }
 

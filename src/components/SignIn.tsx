@@ -3,7 +3,7 @@ import Input from './forms/Input';
 import 'src/scss/components/signup.scss';
 import logo from 'src/assets/logo.jpg';
 import FormButtons from './forms/Buttons';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { signInWithGoogle } from '../firebase/utils';
 import UserModel from '../model/user';
 
@@ -43,8 +43,8 @@ class SignIn extends Component<object, IState> {
         ...initialState,
       });
     } catch (error) {
-      const message = (error as Error).message;
-      const err = [message];
+      console.log(error);
+      const err = ['Error while signing in. Please try again'];
       this.setState((prevState) => ({
         ...prevState,
         errors: err,
@@ -69,11 +69,14 @@ class SignIn extends Component<object, IState> {
               <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <h1 className="heading">Login</h1>
                 {errors.length > 0 && (
-                  <ul>
-                    {errors.map((error, index) => {
-                      return <li key={index}>{error}</li>;
-                    })}
-                  </ul>
+                  <div>
+                    <span>Error</span>
+                    <ul>
+                      {errors.map((error, index) => {
+                        return <li key={index}>{error}</li>;
+                      })}
+                    </ul>
+                  </div>
                 )}
                 <form
                   className="space-y-4 md:space-y-6"
@@ -101,13 +104,43 @@ class SignIn extends Component<object, IState> {
                       required
                     />
                   </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="remember"
+                          aria-describedby="remember"
+                          type="checkbox"
+                          className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                          required
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor="remember"
+                          className="text-gray-500 dark:text-gray-300"
+                        >
+                          Remember me
+                        </label>
+                      </div>
+                    </div>
+                    <Link
+                      to={{
+                        pathname: '/forgot-password',
+                        search: `?email=${email}`,
+                      }}
+                      className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+                    >
+                      Forgot Password
+                    </Link>
+                  </div>
                   <FormButtons type="submit">Login</FormButtons>
 
                   <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                     Don’t have an account yet?{' '}
                     <NavLink
                       to="/registration"
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                     >
                       Register
                     </NavLink>

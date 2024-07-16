@@ -13,6 +13,8 @@ import LoginPage from './pages/LoginPage';
 import { auth, fetchOrAddUser } from './firebase/utils';
 import { Unsubscribe, User } from 'firebase/auth';
 import { DocumentData, onSnapshot } from 'firebase/firestore';
+import LoginRoute from './util/loginRoute';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 
 interface IAppState {
   currentUser: DocumentData | null;
@@ -27,8 +29,30 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<MainLayouts />}>
       <Route index element={<HomePage />} />
-      <Route path="/registration" element={<RegistrationPage />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/registration"
+        element={
+          <LoginRoute>
+            <RegistrationPage />
+          </LoginRoute>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <LoginRoute>
+            <LoginPage />
+          </LoginRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <LoginRoute>
+            <ForgotPasswordPage />
+          </LoginRoute>
+        }
+      />
     </Route>
   )
 );

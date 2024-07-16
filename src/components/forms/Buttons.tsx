@@ -1,4 +1,5 @@
 import { FC, ButtonHTMLAttributes, ReactNode } from 'react';
+import 'src/scss/forms/button.scss';
 
 interface FormButtonsProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;

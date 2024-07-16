@@ -1,0 +1,14 @@
+.button {
+  .success {
+    @apply bg-green-500 hover:bg-green-600;
+  }
+  .error {
+    @apply bg-red-500 hover:bg-red-600;
+  }
+  .warning {
+    @apply bg-yellow-500 hover:bg-yellow-600;
+  }
+  .info {
+    @apply bg-blue-500 hover:bg-blue-600;
+  }
+}

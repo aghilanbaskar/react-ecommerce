@@ -1,4 +1,4 @@
-import { Component, createContext, ReactNode } from 'react';
+import { Component, ReactNode } from 'react';
 import HomePage from './pages/HomePage';
 import '@/scss/default.scss';
 import RegistrationPage from './pages/RegistrationPage';
@@ -12,18 +12,21 @@ import MainLayouts from './layouts/MainLayouts';
 import LoginPage from './pages/LoginPage';
 import { auth, fetchOrAddUser } from './firebase/utils';
 import { Unsubscribe, User } from 'firebase/auth';
-import { DocumentData, onSnapshot } from 'firebase/firestore';
+import { onSnapshot } from 'firebase/firestore';
 import LoginRoute from './util/loginRoute';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import { setCurrentUser } from './redux/User/user.action';
+import { ICurrentUser, IUserState } from './redux/User/user.types';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 interface IAppState {
-  currentUser: DocumentData | null;
+  currentUser: ICurrentUser;
 }
-const initialState: IAppState = {
-  currentUser: null,
-};
-// Create a context for currentUser
-const UserContext = createContext<IAppState>({ ...initialState });
+
+interface IAppProps {
+  setCurrentUser: (user: ICurrentUser) => void;
+}
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -57,18 +60,16 @@ const router = createBrowserRouter(
   )
 );
 
-class App extends Component<object, IAppState> {
+class App extends Component<IAppProps, IAppState> {
   private firebaseAuthListener: Unsubscribe | null = null;
   private userDocListener: Unsubscribe | null = null;
 
-  constructor(props: object) {
+  constructor(props: IAppProps) {
     super(props);
-    this.state = {
-      ...initialState,
-    };
   }
 
   componentDidMount(): void {
+    const { setCurrentUser } = this.props;
     this.firebaseAuthListener = auth.onAuthStateChanged(
       async (user: User | null) => {
         if (user) {
@@ -79,11 +80,12 @@ class App extends Component<object, IAppState> {
                 const documentData = doc.data();
                 const documentId = doc.id;
                 this.setState({ currentUser: { documentId, ...documentData } });
+                setCurrentUser({ documentId, ...documentData });
               }
             });
           }
         } else {
-          this.setState({ ...initialState });
+          setCurrentUser(null);
           if (this.userDocListener) this.userDocListener();
           this.userDocListener = null;
         }
@@ -98,14 +100,19 @@ class App extends Component<object, IAppState> {
   }
 
   render(): ReactNode {
-    const { currentUser } = this.state;
-    return (
-      <UserContext.Provider value={{ currentUser }}>
-        <RouterProvider router={router} />
-      </UserContext.Provider>
-    );
+    return <RouterProvider router={router} />;
   }
 }
 
-export default App;
-export { UserContext };
+const mapStateToProps = ({ user }: { user: IUserState }) => {
+  return {
+    currentUser: user.currentUser,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    setCurrentUser: (user: ICurrentUser) => dispatch(setCurrentUser(user)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(App);

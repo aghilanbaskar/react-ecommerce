@@ -1,12 +1,12 @@
 import 'src/scss/header.scss';
 import logo from 'src/assets/logo.jpg';
 import { Link, NavLink } from 'react-router-dom';
-import { useContext } from 'react';
-import { UserContext } from '../App';
 import { signOut } from '../firebase/utils';
+import { ICurrentUser, IUserState } from '../redux/User/user.types';
+import { connect } from 'react-redux';
 
-const Header = () => {
-  const { currentUser } = useContext(UserContext);
+const Header = (props: { currentUser: ICurrentUser }) => {
+  const { currentUser } = props;
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'navLinkActive' : 'navLink';
   return (
@@ -88,4 +88,14 @@ const Header = () => {
   );
 };
 
-export default Header;
+Header.defaultProps = {
+  currentUser: null,
+};
+
+const mapStateToProps = ({ user }: { user: IUserState }) => {
+  return {
+    currentUser: user.currentUser,
+  };
+};
+
+export default connect(mapStateToProps, null)(Header);

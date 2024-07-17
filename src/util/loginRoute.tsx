@@ -1,9 +1,12 @@
-import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { UserContext } from '../App'; // Adjust the path according to your project structure
+import { useSelector } from 'react-redux';
+
+import { IUserState } from '../redux/User/user.types';
 
 const LoginRoute = ({ children }: { children: JSX.Element }) => {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser } = useSelector(
+    (state: { user: IUserState }) => state.user
+  );
 
   if (currentUser) {
     return <Navigate to="/" replace />;

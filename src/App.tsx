@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react';
+import { useEffect } from 'react';
 import HomePage from './pages/HomePage';
 import '@/scss/default.scss';
 import RegistrationPage from './pages/RegistrationPage';
@@ -19,10 +19,8 @@ import { setCurrentUser } from './redux/User/user.action';
 import { ICurrentUser, IUserState } from './redux/User/user.types';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-
-interface IAppState {
-  currentUser: ICurrentUser;
-}
+import DashboardPage from './pages/DashboardPage';
+import WithAuth from './hoc/WithAuth';
 
 interface IAppProps {
   setCurrentUser: (user: ICurrentUser) => void;
@@ -56,53 +54,54 @@ const router = createBrowserRouter(
           </LoginRoute>
         }
       />
+      <Route
+        path="/dashboard"
+        element={
+          <WithAuth>
+            <DashboardPage />
+          </WithAuth>
+        }
+      />
     </Route>
   )
 );
 
-class App extends Component<IAppProps, IAppState> {
-  private firebaseAuthListener: Unsubscribe | null = null;
-  private userDocListener: Unsubscribe | null = null;
+const App = (props: IAppProps) => {
+  const { setCurrentUser } = props;
 
-  constructor(props: IAppProps) {
-    super(props);
-  }
-
-  componentDidMount(): void {
-    const { setCurrentUser } = this.props;
-    this.firebaseAuthListener = auth.onAuthStateChanged(
+  useEffect(() => {
+    let userDocListener: Unsubscribe | null = null;
+    const firebaseAuthListener = auth.onAuthStateChanged(
       async (user: User | null) => {
         if (user) {
           const userRef = await fetchOrAddUser(user);
           if (userRef) {
-            this.userDocListener = onSnapshot(userRef, (doc) => {
+            userDocListener = onSnapshot(userRef, (doc) => {
               if (doc.exists()) {
                 const documentData = doc.data();
                 const documentId = doc.id;
-                this.setState({ currentUser: { documentId, ...documentData } });
-                setCurrentUser({ documentId, ...documentData });
+                const updatedUser = { documentId, ...documentData };
+                setCurrentUser(updatedUser);
               }
             });
           }
         } else {
           setCurrentUser(null);
-          if (this.userDocListener) this.userDocListener();
-          this.userDocListener = null;
+          if (userDocListener) userDocListener();
+          userDocListener = null;
         }
       }
     );
-  }
 
-  componentWillUnmount(): void {
-    if (this.firebaseAuthListener) {
-      this.firebaseAuthListener();
-    }
-  }
+    return () => {
+      if (firebaseAuthListener) {
+        firebaseAuthListener();
+      }
+    };
+  }, []);
 
-  render(): ReactNode {
-    return <RouterProvider router={router} />;
-  }
-}
+  return <RouterProvider router={router} />;
+};
 
 const mapStateToProps = ({ user }: { user: IUserState }) => {
   return {

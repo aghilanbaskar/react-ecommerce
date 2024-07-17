@@ -5,8 +5,7 @@ import { signOut } from '../firebase/utils';
 import { ICurrentUser, IUserState } from '../redux/User/user.types';
 import { connect } from 'react-redux';
 
-const Header = (props: { currentUser: ICurrentUser }) => {
-  const { currentUser } = props;
+const Header = ({ currentUser = null }: { currentUser: ICurrentUser }) => {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'navLinkActive' : 'navLink';
   return (
@@ -62,6 +61,11 @@ const Header = (props: { currentUser: ICurrentUser }) => {
                   </NavLink>
                 </li>
                 <li>
+                  <NavLink to="/dashboard" className={linkClass}>
+                    Dashboard
+                  </NavLink>
+                </li>
+                <li>
                   <Link to="/" onClick={() => signOut()}>
                     Logout
                   </Link>
@@ -86,10 +90,6 @@ const Header = (props: { currentUser: ICurrentUser }) => {
       </nav>
     </div>
   );
-};
-
-Header.defaultProps = {
-  currentUser: null,
 };
 
 const mapStateToProps = ({ user }: { user: IUserState }) => {

@@ -42,8 +42,12 @@ export const fetchOrAddUser = async (
     const createdAt = new Date();
     try {
       const userJson = omitBy(user.toJSON(), isNil);
+      const { displayName, email, photoURL, uid } = userJson;
       await setDoc(userRef, {
-        ...userJson,
+        displayName,
+        email,
+        photoURL,
+        uid,
         createdAt,
         ...additionalData,
       });

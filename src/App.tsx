@@ -16,15 +16,9 @@ import { onSnapshot } from 'firebase/firestore';
 import LoginRoute from './util/loginRoute';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import { setCurrentUser } from './redux/User/user.action';
-import { ICurrentUser, IUserState } from './redux/User/user.types';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { useDispatch } from 'react-redux';
 import DashboardPage from './pages/DashboardPage';
 import WithAuth from './hoc/WithAuth';
-
-interface IAppProps {
-  setCurrentUser: (user: ICurrentUser) => void;
-}
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,9 +59,8 @@ const router = createBrowserRouter(
     </Route>
   )
 );
-
-const App = (props: IAppProps) => {
-  const { setCurrentUser } = props;
+const App = () => {
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let userDocListener: Unsubscribe | null = null;
@@ -81,12 +74,12 @@ const App = (props: IAppProps) => {
                 const documentData = doc.data();
                 const documentId = doc.id;
                 const updatedUser = { documentId, ...documentData };
-                setCurrentUser(updatedUser);
+                dispatch(setCurrentUser(updatedUser));
               }
             });
           }
         } else {
-          setCurrentUser(null);
+          dispatch(setCurrentUser(null));
           if (userDocListener) userDocListener();
           userDocListener = null;
         }
@@ -103,15 +96,4 @@ const App = (props: IAppProps) => {
   return <RouterProvider router={router} />;
 };
 
-const mapStateToProps = ({ user }: { user: IUserState }) => {
-  return {
-    currentUser: user.currentUser,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    setCurrentUser: (user: ICurrentUser) => dispatch(setCurrentUser(user)),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

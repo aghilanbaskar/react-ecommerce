@@ -1,8 +1,10 @@
 import { auth, db } from '../firebase/utils';
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
   User,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -71,6 +73,28 @@ class UserModel {
       const newUser = new UserModel(
         user.uid,
         email,
+        user.displayName || '',
+        user
+      );
+      return newUser;
+    }
+    return null;
+  }
+
+  static async signOut() {
+    await auth.signOut();
+  }
+
+  static async signInWithGoogle() {
+    const GoogleProvider = new GoogleAuthProvider();
+    GoogleProvider.setCustomParameters({ prompt: 'select_account' });
+
+    const userCredential = await signInWithPopup(auth, GoogleProvider);
+    const user = userCredential.user;
+    if (user) {
+      const newUser = new UserModel(
+        user.uid,
+        user.email || '',
         user.displayName || '',
         user
       );

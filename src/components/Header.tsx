@@ -1,11 +1,18 @@
 import 'src/scss/header.scss';
 import logo from 'src/assets/logo.jpg';
 import { Link, NavLink } from 'react-router-dom';
-import { signOut } from '../firebase/utils';
-import { ICurrentUser, IUserState } from '../redux/User/user.types';
-import { connect } from 'react-redux';
+import { IUserState } from '../redux/User/user.types';
+import { useSelector } from 'react-redux';
+import UserModel from '../model/user';
 
-const Header = ({ currentUser = null }: { currentUser: ICurrentUser }) => {
+const mapState = ({ user }: { user: IUserState }) => {
+  return {
+    currentUser: user.currentUser,
+  };
+};
+
+const Header = () => {
+  const { currentUser } = useSelector(mapState);
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'navLinkActive' : 'navLink';
   return (
@@ -66,7 +73,7 @@ const Header = ({ currentUser = null }: { currentUser: ICurrentUser }) => {
                   </NavLink>
                 </li>
                 <li>
-                  <Link to="/" onClick={() => signOut()}>
+                  <Link to="/" onClick={() => UserModel.signOut()}>
                     Logout
                   </Link>
                 </li>
@@ -92,10 +99,4 @@ const Header = ({ currentUser = null }: { currentUser: ICurrentUser }) => {
   );
 };
 
-const mapStateToProps = ({ user }: { user: IUserState }) => {
-  return {
-    currentUser: user.currentUser,
-  };
-};
-
-export default connect(mapStateToProps, null)(Header);
+export default Header;

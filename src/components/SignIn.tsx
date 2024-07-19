@@ -1,26 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Input from './forms/Input';
 import 'src/scss/components/signup.scss';
 import logo from 'src/assets/logo.jpg';
 import FormButtons from './forms/Buttons';
-import { Link, NavLink } from 'react-router-dom';
-import { signInWithGoogle } from '../firebase/utils';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInUserWithEmailAndPassword } from '../redux/Auth/auth.action';
+import { IUserState } from '../redux/User/user.types';
+import { IAuthState } from '../redux/Auth/auth.types';
 import UserModel from '../model/user';
 
+const mapState = ({ user, auth }: { user: IUserState; auth: IAuthState }) => ({
+  currentUser: user.currentUser,
+  success: auth.success,
+});
+
 const SignIn = () => {
+  const { success } = useSelector(mapState);
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<string[]>([]);
+  const dispatch = useDispatch();
 
   const resetForm = () => {
     setEmail('');
     setPassword('');
   };
 
+  useEffect(() => {
+    if (success) {
+      resetForm();
+      navigate('/');
+    }
+  }, [success]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      await UserModel.signIn(email, password);
+      dispatch(signInUserWithEmailAndPassword({ email, password }));
       resetForm();
     } catch (error) {
       console.log(error);
@@ -117,7 +135,7 @@ const SignIn = () => {
               </form>
               <FormButtons
                 className="flex items-center justify-center mt-4 text-gray-600 transition-colors duration-300 transform border rounded-lg dark:border-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 w-full"
-                onClick={signInWithGoogle}
+                onClick={() => UserModel.signInWithGoogle()}
               >
                 <div className="px-4 py-2">
                   <svg className="w-6 h-6" viewBox="0 0 40 40">

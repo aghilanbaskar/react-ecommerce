@@ -1,17 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Input from './forms/Input';
 import 'src/scss/components/signup.scss';
 import logo from 'src/assets/logo.jpg';
 import FormButtons from './forms/Buttons';
-import { fetchOrAddUser } from '../firebase/utils';
-import UserModel from '../model/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { signUpUserWithEmailAndPassword } from '../redux/Auth/auth.action';
+import { IUserState } from '../redux/User/user.types';
+import { IAuthState } from '../redux/Auth/auth.types';
+import { useNavigate } from 'react-router-dom';
+
+const mapState = ({ user, auth }: { user: IUserState; auth: IAuthState }) => ({
+  currentUser: user.currentUser,
+  success: auth.success,
+  errors: auth.error,
+});
 
 const Signup = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { errors, success } = useSelector(mapState);
   const [displayName, setDisplayName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [errors, setErrors] = useState<string[]>([]);
 
   const resetForm = () => {
     setDisplayName('');
@@ -20,44 +31,23 @@ const Signup = () => {
     setConfirmPassword('');
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
+  useEffect(() => {
+    if (success) {
+      resetForm();
+      navigate('/');
+    }
+  }, [success]);
 
-      if (!password || !confirmPassword) {
-        const err = ['Please enter a password'];
-        setErrors(err);
-        return;
-      }
-      if (!displayName) {
-        const err = ['Please enter a display name'];
-        setErrors(err);
-        return;
-      }
-      if (!email) {
-        const err = ['Please enter an email'];
-        setErrors(err);
-        return;
-      }
-      if (password !== confirmPassword) {
-        const err = ["Passwords don't match"];
-        setErrors(err);
-        return;
-      }
-      const userModel = await UserModel.createUser(
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(
+      signUpUserWithEmailAndPassword({
         email,
         password,
-        displayName
-      );
-      if (userModel) {
-        await fetchOrAddUser(userModel.user, { displayName, email, password });
-      }
-      resetForm();
-    } catch (error) {
-      const message = (error as Error).message;
-      const err = [message];
-      setErrors(err);
-    }
+        confirmPassword,
+        displayName,
+      })
+    );
   };
   return (
     <>

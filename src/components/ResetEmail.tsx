@@ -1,30 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Input from './forms/Input';
 import 'src/scss/components/signup.scss';
 import logo from 'src/assets/logo.jpg';
 import FormButtons from './forms/Buttons';
 import { NavLink } from 'react-router-dom';
-import UserModel from '../model/user';
+import { IAuthState } from '../redux/Auth/auth.types';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { resetEmail } from '../redux/Auth/auth.action';
+import { IUserState } from '../redux/User/user.types';
 
+const mapState = ({ user, auth }: { user: IUserState; auth: IAuthState }) => ({
+  currentUser: user.currentUser,
+  success: auth.resetEmailSent,
+  errors: auth.error,
+});
 const ResetEmail = () => {
+  const { success, errors } = useSelector(mapState);
+  const dispatch = useDispatch();
   const [email, setEmail] = useState<string>('');
-  const [errors, setErrors] = useState<string[]>([]);
 
   const resetForm = () => {
     setEmail('');
-    setErrors([]);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      await UserModel.sendPasswordResetEmail(email);
+  useEffect(() => {
+    if (success) {
       resetForm();
-    } catch (error) {
-      console.error('email-reset', error);
-      const err = ['Email not found. Please try again'];
-      setErrors(err);
     }
+  }, [success]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(resetEmail(email));
   };
   return (
     <>
